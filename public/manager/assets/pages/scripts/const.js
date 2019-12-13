@@ -6,9 +6,9 @@ var hostIp = "http://172.16.7.130:";
 
 var regulateSucc = {
     "uploadFolder" : "/home/yfdev/src/ywt_web",                       // 上传文件所在文件夹
-    "loginUrl" : hostIp + "8001/gramtu/ac/web/",                      // 登录URL
-    "userHostUrl" : hostIp + "8001/gramtu/ac/web/front/",             // 用户相关URL
-    "gramtuWebUrl": hostIp + "8002/gramtu/web/"                       // web端URL
+    "loginUrl" : hostIp + "8001/mswl/ac/web/",                      // 登录URL
+    "userHostUrl" : hostIp + "8001/mswl/ac/web/front/",             // 用户相关URL
+    "gramtuWebUrl": hostIp + "8002/mswl/web/"                       // web端URL
 };
 
 const SUCCESS = "0000";
