@@ -258,4 +258,24 @@ router.get('/turnitinuk',function(req,res,next){
     }
 });
 
+
+//家政模板
+router.get('/preview/home',function(req,res,next){
+    console.info(req.url);
+    res.render('manager/preview/home');
+});
+
+//出租模板
+router.get('/preview/rent',function(req,res,next){
+    console.info(req.url);
+    res.render('manager/preview/rent');
+});
+
+
+//二手模板
+router.get('/preview/used',function(req,res,next){
+    console.info(req.url);
+    res.render('manager/preview/used');
+});
+
 module.exports = router;
