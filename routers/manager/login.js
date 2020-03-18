@@ -57,6 +57,18 @@ router.get('/user',function(req,res,next){
     }
 });
 
+router.get('/menu',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('manager/power/menu', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
 
 router.get('/userpower',function(req,res,next){
     console.info(req.url);
@@ -85,7 +97,19 @@ router.get('/rolepower',function(req,res,next){
     }
 });
 
-
+//用户管理（个人信息）
+router.get('/updateuser',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]){
+        res.render('manager/user/updateuser',{
+            menu:req.url.substr(1),
+            loginsucc:req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
 
 router.get('/role',function(req,res,next){
     console.info(req.url);
@@ -126,11 +150,38 @@ router.get('/organ',function(req,res,next){
     }
 });
 
-router.get('/feature',function(req,res,next){
+//二手物品分类
+router.get('/usedtype',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/service/feature', {
+        res.render('manager/param/usedtype', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+//家政服务分类
+router.get('/hometype',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('manager/param/hometype', {
+            menu: req.url.substr(1),
+            loginsucc: req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+//微信注册用户
+router.get('/wxregister',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
+        res.render('manager/register/wxregister', {
             menu: req.url.substr(1),
             loginsucc: req.session["ywtLogin" + uname]
         });
@@ -139,61 +190,12 @@ router.get('/feature',function(req,res,next){
     }
 });
 
-router.get('/release',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/article/release', {
-            menu: req.url.substr(1),
-            loginsucc: req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
-
-
-router.get('/template',function(req,res,next){
-    console.info(req.url);
-    var artid = req.query.artid;
-    res.render('manager/article/template', {
-        artid: artid
-    });
-});
-
-
-router.get('/artlist',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/article/artlist', {
-            menu: req.url.substr(1),
-            loginsucc: req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
-
-router.get('/menu',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/power/menu', {
-            menu: req.url.substr(1),
-            loginsucc: req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
-
-//评价管理
-router.get('/coupon',function(req,res,next){
+//支付宝注册用户
+router.get('/aliregister',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){   ////判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/service/coupon',{
+        res.render('manager/register/aliregister',{
             menu: req.url.substr(1),
             loginsucc: req.session["ywtLogin" + uname]
         });
@@ -202,12 +204,12 @@ router.get('/coupon',function(req,res,next){
     }
 });
 
-//用户评价查询
-router.get('/price',function(req,res,next){
+//微信审核信息
+router.get('/wxreview',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/service/price',{
+        res.render('manager/review/wxreview',{
             menu: req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -216,12 +218,12 @@ router.get('/price',function(req,res,next){
     }
 });
 
-//用户管理（个人信息）
-router.get('/updateuser',function(req,res,next){
+//支付宝审核信息
+router.get('/alireview',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/user/updateuser',{
+        res.render('manager/review/alireview',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -230,12 +232,12 @@ router.get('/updateuser',function(req,res,next){
     }
 });
 
-//turnitin国际版参数
-router.get('/turnitin',function(req,res,next){
+//微信发布信息
+router.get('/wxreleased',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/param/turnitin',{
+        res.render('manager/released/wxreleased',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -243,13 +245,12 @@ router.get('/turnitin',function(req,res,next){
         res.redirect('/');
     }
 });
-
-//turnitinUK版参数
-router.get('/turnitinuk',function(req,res,next){
+//支付宝发布信息
+router.get('/alireleased',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/param/turnitinuk',{
+        res.render('manager/released/alireleased',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -257,8 +258,32 @@ router.get('/turnitinuk',function(req,res,next){
         res.redirect('/');
     }
 });
-
-
+//微信呼出电话
+router.get('/wxphone',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]){
+        res.render('manager/released/wxphone',{
+            menu:req.url.substr(1),
+            loginsucc:req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
+//支付宝呼出电话
+router.get('/aliphone',function(req,res,next){
+    console.info(req.url);
+    var uname = req.query.username;
+    if(req.session["ywtUname" + uname]){
+        res.render('manager/released/aliphone',{
+            menu:req.url.substr(1),
+            loginsucc:req.session["ywtLogin" + uname]
+        });
+    }else{
+        res.redirect('/');
+    }
+});
 //家政模板
 router.get('/preview/home',function(req,res,next){
     console.info(req.url);
