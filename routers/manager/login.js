@@ -176,12 +176,12 @@ router.get('/hometype',function(req,res,next){
         res.redirect('/');
     }
 });
-//微信注册用户
-router.get('/wxregister',function(req,res,next){
+//房屋出租分类
+router.get('/renttype',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]) {  //判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/register/wxregister', {
+        res.render('manager/param/renttype', {
             menu: req.url.substr(1),
             loginsucc: req.session["ywtLogin" + uname]
         });
@@ -190,12 +190,12 @@ router.get('/wxregister',function(req,res,next){
     }
 });
 
-//支付宝注册用户
-router.get('/aliregister',function(req,res,next){
+//注册用户
+router.get('/register',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){   ////判断session 状态，如果有效，则返回主页，否则转到登录页面
-        res.render('manager/register/aliregister',{
+        res.render('manager/register/register',{
             menu: req.url.substr(1),
             loginsucc: req.session["ywtLogin" + uname]
         });
@@ -204,12 +204,12 @@ router.get('/aliregister',function(req,res,next){
     }
 });
 
-//微信审核信息
-router.get('/wxreview',function(req,res,next){
+//审核信息
+router.get('/review',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/review/wxreview',{
+        res.render('manager/review/review',{
             menu: req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -218,12 +218,12 @@ router.get('/wxreview',function(req,res,next){
     }
 });
 
-//支付宝审核信息
-router.get('/alireview',function(req,res,next){
+//已发布信息
+router.get('/released',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/review/alireview',{
+        res.render('manager/released/released',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -232,12 +232,12 @@ router.get('/alireview',function(req,res,next){
     }
 });
 
-//微信发布信息
-router.get('/wxreleased',function(req,res,next){
+//精选信息
+router.get('/choice',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/released/wxreleased',{
+        res.render('manager/released/choice',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -245,12 +245,12 @@ router.get('/wxreleased',function(req,res,next){
         res.redirect('/');
     }
 });
-//支付宝发布信息
-router.get('/alireleased',function(req,res,next){
+//广告信息
+router.get('/advertisement',function(req,res,next){
     console.info(req.url);
     var uname = req.query.username;
     if(req.session["ywtUname" + uname]){
-        res.render('manager/released/alireleased',{
+        res.render('manager/param/advertisement',{
             menu:req.url.substr(1),
             loginsucc:req.session["ywtLogin" + uname]
         });
@@ -258,32 +258,7 @@ router.get('/alireleased',function(req,res,next){
         res.redirect('/');
     }
 });
-//微信呼出电话
-router.get('/wxphone',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    if(req.session["ywtUname" + uname]){
-        res.render('manager/released/wxphone',{
-            menu:req.url.substr(1),
-            loginsucc:req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
-//支付宝呼出电话
-router.get('/aliphone',function(req,res,next){
-    console.info(req.url);
-    var uname = req.query.username;
-    if(req.session["ywtUname" + uname]){
-        res.render('manager/released/aliphone',{
-            menu:req.url.substr(1),
-            loginsucc:req.session["ywtLogin" + uname]
-        });
-    }else{
-        res.redirect('/');
-    }
-});
+
 //家政模板
 router.get('/preview/home',function(req,res,next){
     console.info(req.url);

@@ -1,20 +1,17 @@
 /**
- * Created by Administrator on 2019/2/21.
+ * Created by Administrator on 2020/3/18.
  */
-/**
- * Created by Administrator on 2019/2/19.
- */
-var servList = [];
+var typeList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
-        ServTable.init();
-        ServEdit.init();
+        TypeTable.init();
+        TypeEdit.init();
     });
 }
 
-var ServTable = function () {
+var TypeTable = function () {
     var initTable = function () {
-        var table = $('#serv_table');
+        var table = $('#type_table');
         pageLengthInit(table);
         table.dataTable({
             "language": TableLanguage,
@@ -31,22 +28,21 @@ var ServTable = function () {
             "ajax":function (data, callback, settings) {
                 var formData = $(".inquiry-form").getFormData();
                 var da = {
-                    servname: formData.servname,
+                    busitype: busiType,
+                    typename: formData.typename,
                     currentpage: (data.start / data.length) + 1,
                     pagesize: data.length == -1 ? "": data.length,
                     startindex: data.start,
                     draw: data.draw
                 };
-                servDataGet(da, callback);
+                typeDataGet(da, callback);
             },
             columns: [//返回的json数据在这里填充，注意一定要与上面的<th>数量对应，否则排版出现扭曲
                 { "data": null},
                 { "data": null},
-                { "data": "servid", visible: false },
-                { "data": "servname" },
-                { "data": "servlogo" },
-                { "data": "servlink" },
+                { "data": "typename" },
                 { "data": "sort" },
+                { "data": "time" },
                 { "data": null }
             ],
             columnDefs: [
@@ -66,16 +62,10 @@ var ServTable = function () {
                 {
                     "targets":[4],
                     "render": function(data, type, row, meta) {
-                        return "<img src='" + data + "' style='width: 100px; height:100px'>";
-                    }
-                },
-                {
-                    "targets":[5],
-                    "render": function(data, type, row, meta) {
-                        return "<a href='" + data + "'>";
+                        return dateTimeFormat(data);
                     }
                 },{
-                    "targets":[7],
+                    "targets":[5],
                     "render": function(data, type, row, meta) {
                         if(!makeEdit(menu,loginSucc.functionlist,"#op_edit")) return '-';
                         return '<a href="javascript:;" id="op_edit">编辑</a>'
@@ -83,7 +73,8 @@ var ServTable = function () {
                 }
             ],
             fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                $('td:eq(1)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(0),td:eq(1),td:eq(4),td:eq(5)', nRow).attr('style', 'text-align: center;');
+                $('td:eq(3)', nRow).attr('style', 'text-align: right;');
             }
         });
         table.find('.group-checkable').change(function () {
@@ -116,7 +107,7 @@ var ServTable = function () {
     };
 }();
 
-var ServEdit = function() {
+var TypeEdit = function() {
     var handleRegister = function() {
         var validator = $('.register-form').validate({
             errorElement: 'span', //default input error message container
@@ -124,32 +115,18 @@ var ServEdit = function() {
             focusInvalid: false, // do not focus the last invalid input
             ignore: "",
             rules: {
-                servname: {
-                    required: true
-                },
-                servlink: {
+                typename: {
                     required: true
                 },
                 sort: {
-                    required: true
-                },
-                image: {
-                    required: true
+                    required: true,
+                    digits: true
                 }
             },
 
             messages: {
-                servname: {
-                    required: "服务名必须输入"
-                },
-                servlink: {
-                    required: "链接地址必须输入"
-                },
-                sort: {
-                    required: "排序号必须输入"
-                },
-                image: {
-                    required: "服务LOGO必须上传"
+                typename: {
+                    required: "分类名必须输入"
                 }
             },
 
@@ -179,84 +156,49 @@ var ServEdit = function() {
                 form.submit();
             }
         });
-        $('#serv-add-confirm').click(function() {
-            btnDisable($('#serv-add-confirm'));
+        $('#register-btn').click(function() {
+            btnDisable($('#register-btn'));
             if ($('.register-form').validate().form()) {
-                //先上传LOGO
-                var serv = $('.register-form').getFormData();
-                //如果头像发生了变化，先上传头像
-                //获取原来的头像
-                var oldimage = $("input[name=oldimage]").val();
-                if(serv.image != oldimage) {
-                    var formData = new FormData();
-                    formData.append('photo', $("#servlogo").get(0).files[0]);
-                    $.ajax({
-                        type: 'POST',
-                        url: '/upload/image',
-                        data: formData,
-                        dataType: 'json',
-                        contentType: false,
-                        processData: false,
-                        success: function (result) {
-                            if (result.ret) {
-                                serv.image = result.url;
-                                if($("input[name=edittype]").val() == SERVADD){
-                                    servAdd(serv);
-                                }else{
-                                    servEdit(serv);
-                                }
-                            } else {
-                                alertDialog("上传LOGO失败！" + result.msg);
-                            }
-                        },
-                        error: function () {
-                            alertDialog("上传LOGO失败！");
-                        }
-                    });
-                }else {
-                    if ($("input[name=edittype]").val() == SERVADD) {
-                        servAdd(serv);
-                    } else {
-                        servEdit(serv);
-                    }
+                var type = $('.register-form').getFormData();
+                type.busitype = busiType;
+                if($("input[name=edittype]").val() == TYPEADD){
+                    typeAdd(type);
+                }else{
+                    typeEdit(type);
                 }
             }
         });
-        //新增角色
+        //新增分类
         $('#op_add').click(function() {
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("新增特色服务");
+            $(".modal-title").text("新增分类");
             $(":input",".register-form").not(":button,:reset,:submit,:radio").val("")
                 .removeAttr("checked")
                 .removeAttr("selected");
-            //清空LOGO显示
-            $("#servlogo").siblings("img").attr("src", "");
-            $("input[name=edittype]").val(SERVADD);
-            $('#edit_serv').modal('show');
+            //分类代码可以输入
+            $("input[name=edittype]").val(TYPEADD);
+            $('#edit_type').modal('show');
         });
-        //编辑特色服务
-        $("#serv_table").on('click', '#op_edit', function (e) {
+        //编辑分类
+        $("#type_table").on('click', '#op_edit', function (e) {
             e.preventDefault();
             validator.resetForm();
             $(".register-form").find(".has-error").removeClass("has-error");
-            $(".modal-title").text("编辑特色服务");
+            $(".modal-title").text("编辑分类");
             var exclude = [""];
             var row = $(this).parents('tr')[0];     //通过获取该td所在的tr，即td的父级元素，取出第一列序号元素
-            var servid = $("#serv_table").dataTable().fnGetData(row).servid;
-            var serv = new Object();
-            for(var i=0; i < servList.length; i++){
-                if(servid == servList[i].servid){
-                    serv = servList[i];
+            var typeid = $("#type_table").dataTable().fnGetData(row).typeid;
+            var type = new Object();
+            for(var i=0; i < typeList.length; i++){
+                if(typeid == typeList[i].typeid){
+                    type = typeList[i];
                 }
             }
-            var options = { jsonValue: serv, exclude:exclude, isDebug: false};
+            var options = { jsonValue: type, exclude:exclude, isDebug: false};
             $(".register-form").initForm(options);
-            //LOGO框赋值
-            $("#servlogo").siblings("img").attr("src", serv.servlogo);
-            $("#servlogo").siblings("input[name=image], input[name=oldimage]").val(serv.servlogo);
-            $("input[name=edittype]").val(SERVEDIT);
-            $('#edit_serv').modal('show');
+            $("input[name=edittype]").val(TYPEEDIT);
+            $('#edit_type').modal('show');
         });
     };
 
@@ -267,58 +209,63 @@ var ServEdit = function() {
     };
 }();
 
-var ServDelete = function() {
+var TypeDelete = function() {
     $('#op_del').click(function() {
         var len = $(".checkboxes:checked").length;
         if(len < 1){
             alertDialog("至少选中一项！");
         }else{
             var para = 1;
-            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", ServDelete.deleteServ, para)
+            confirmDialog("数据删除后将不可恢复，您确定要删除吗？", TypeDelete.deleteType, para)
         }
     });
     return{
-        deleteServ: function(){
-            var servlist = {servidlist:[]};
+        deleteType: function(){
+            var typelist = {busitype: busiType, typeidlist:[]};
             $(".checkboxes:checked").parents("td").each(function () {
                 var row = $(this).parents('tr')[0];     //通过获取该td所在的tr，即td的父级元素，取出第一列序号元素
-                var servid = $("#serv_table").dataTable().fnGetData(row).servid;
-                servlist.servidlist.push(servid);
+                var typeid = $("#type_table").dataTable().fnGetData(row).typeid;
+                typelist.typeidlist.push(typeid);
             });
-            servDelete(servlist);
+            typeDelete(typelist);
         }
     }
 }();
 
-function getServDataEnd(flg, result, callback){
+function getTypeDataEnd(flg, result, callback){
     App.unblockUI('#lay-out');
     if(flg){
         if (result && result.retcode == SUCCESS) {
             var res = result.response;
-            servList = res.servlist;
-            tableDataSet(res.draw, res.totalcount, res.totalcount, res.servlist, callback);
+            typeList = res.typelist;
+            tableDataSet(res.draw, res.totalcount, res.totalcount, res.typelist, callback);
         }else{
             tableDataSet(0, 0, 0, [], callback);
             alertDialog(result.retmsg);
         }
     }else{
-        tableDataSet(0, 0, 0, [], callback);
-        alertDialog("特色服务信息获取失败！");
+        //TODO 测试
+        /*typeList = [
+            {typeid:"1",time:"20191220111111", typename:"test1", sort:1},
+            {typeid:"2",time:"20191220111111", typename:"test2", sort:2}
+        ];*/
+        tableDataSet(0, 0, 0, typeList, callback);
+        alertDialog("分类信息获取失败！");
     }
 }
 
-function servInfoEditEnd(flg, result, type){
+function typeInfoEditEnd(flg, result, type){
     var res = "失败";
     var text = "";
     var alert = "";
     switch (type){
-        case SERVADD:
+        case TYPEADD:
             text = "新增";
             break;
-        case SERVEDIT:
+        case TYPEEDIT:
             text = "编辑";
             break;
-        case SERVDELETE:
+        case TYPEDELETE:
             text = "删除";
             break;
     }
@@ -328,33 +275,16 @@ function servInfoEditEnd(flg, result, type){
         }
         if (result && result.retcode == SUCCESS) {
             res = "成功";
-            ServTable.init();
-            $('#edit_serv').modal('hide');
+            TypeTable.init();
+            $('#edit_type').modal('hide');
         }
     }
-    if(alert == "") alert = text + "特色服务" + res + "！";
+    if(alert == "") alert = text + "分类" + res + "！";
     App.unblockUI('#lay-out');
     alertDialog(alert);
 }
 
-$("#serv_inquiry").on("click", function(){
+$("#op_inquiry").on("click", function(){
     //用户查询
-    ServTable.init();
-});
-
-$("#servlogo").change(function(){
-    var file = $(this).get(0).files[0];
-    var inputObj = $(this).siblings("input[name=image]");
-    var imgObj = $(this).siblings("img");
-    inputObj.val(file);
-    if(file == undefined){
-        imgObj.attr("src", "");
-        inputObj.val("");
-        return;
-    }
-    var render = new FileReader();
-    render.readAsDataURL(file);
-    render.onload = function(e) {
-        imgObj.attr("src", e.target.result);
-    }
+    TypeTable.init();
 });
