@@ -138,7 +138,7 @@
     float: left;
     color: #9B9B9B;
     height: inherit;
-    padding-top: 10px;
+    padding-top: 5px;
 }
 
 .footer_btn > div:nth-child(2){
@@ -148,7 +148,7 @@
     background: #f55d02;
     color: #fff;
     height: inherit;
-    padding-top: 10px;
+    padding-top: 5px;
 }
 
 

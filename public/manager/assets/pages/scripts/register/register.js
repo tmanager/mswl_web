@@ -210,6 +210,7 @@ function getPublishInfoDataEnd(flg, result, callback){
             var res = result.response;
             infoList = res.infolist;
             tableDataSet(res.draw, res.totalcount, res.totalcount, res.infolist, callback);
+            $('#info-detail').modal('show');
         }else{
             tableDataSet(0, 0, 0, [], callback);
             alertDialog(result.retmsg);

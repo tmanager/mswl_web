@@ -102,8 +102,6 @@ var AdTable = function () {
         table.on('change', 'tbody tr .checkboxes', function () {
             $(this).parents('tr').toggleClass("active");
         });
-
-
     };
     return {
         init: function (data) {

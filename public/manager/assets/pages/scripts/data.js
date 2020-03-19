@@ -265,3 +265,139 @@ function adDelete(data){
         }
     });
 }
+
+//待审核信息获取
+function reviewDataGet(data, callback){
+    App.blockUI({target:'#lay_out',boxed:true});
+    if(data == null){
+        data = {nickname:"", channel:"", starttime:"", endtime:"", currentpage:"", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type:"post",
+        contentType:"application/json",
+        async:true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:userHostUrl + "review/query",  //请求发送到TestServlet处
+        data:sendMessageEdit(DEFAULT, data),
+        dataType:"json",      //返回数据形式为json
+        success:function(result){
+            console.info("reviewDataGet:"+JSON.stringify(result));
+            getReviewDataEnd(true,result,callback);
+        },
+        error:function(errorMsg){
+            console.info("reviewDataGet-error:"+ JSON.stringify(errorMsg));
+            getReviewDataEnd(false,"",callback);
+        }
+    });
+}
+
+//信息审核
+function infoReview(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userHostUrl + "info/review",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("infoReview:" + JSON.stringify(result));
+            infoReviewEnd(true, result, data);
+        },
+        error: function (errorMsg) {
+            console.info("infoReview-error:" + JSON.stringify(errorMsg));
+            infoReviewEnd(false, "", data);
+        }
+    });
+}
+
+//已发布信息获取
+function releasedDataGet(data, callback){
+    App.blockUI({target:'#lay_out',boxed:true});
+    if(data == null){
+        data = {nickname:"", channel:"", starttime:"", endtime:"", currentpage:"", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type:"post",
+        contentType:"application/json",
+        async:true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:userHostUrl + "released/query",  //请求发送到TestServlet处
+        data:sendMessageEdit(DEFAULT, data),
+        dataType:"json",      //返回数据形式为json
+        success:function(result){
+            console.info("releasedDataGet:"+JSON.stringify(result));
+            getReleasedDataEnd(true,result,callback);
+        },
+        error:function(errorMsg){
+            console.info("releasedDataGet-error:"+ JSON.stringify(errorMsg));
+            getReleasedDataEnd(false,"",callback);
+        }
+    });
+}
+
+//设定为精选
+function infoChoice(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userHostUrl + "info/choice",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("infoChoice:" + JSON.stringify(result));
+            infoChoiceEnd(true, result, data);
+        },
+        error: function (errorMsg) {
+            console.info("infoChoice-error:" + JSON.stringify(errorMsg));
+            infoChoiceEnd(false, "", data);
+        }
+    });
+}
+
+
+//精选信息获取
+function choiceDataGet(data, callback){
+    App.blockUI({target:'#lay_out',boxed:true});
+    if(data == null){
+        data = {nickname:"", channel:"", starttime:"", endtime:"", currentpage:"", pagesize: "", startindex: "0", draw: 1}
+    }
+    $.ajax({
+        type:"post",
+        contentType:"application/json",
+        async:true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url:userHostUrl + "choice/query",  //请求发送到TestServlet处
+        data:sendMessageEdit(DEFAULT, data),
+        dataType:"json",      //返回数据形式为json
+        success:function(result){
+            console.info("choiceDataGet:"+JSON.stringify(result));
+            getChoiceDataEnd(true,result,callback);
+        },
+        error:function(errorMsg){
+            console.info("choiceDataGet-error:"+ JSON.stringify(errorMsg));
+            getChoiceDataEnd(false,"",callback);
+        }
+    });
+}
+
+//设定为置顶
+function infoTop(data){
+    App.blockUI({target:'#lay-out',boxed: true});
+    $.ajax({
+        type: "post",
+        contentType: "application/json",
+        async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: userHostUrl + "info/top",    //请求发送到TestServlet处
+        data: sendMessageEdit(DEFAULT, data),
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            console.info("infoTop:" + JSON.stringify(result));
+            infoTopEnd(true, result, data);
+        },
+        error: function (errorMsg) {
+            console.info("infoTop-error:" + JSON.stringify(errorMsg));
+            infoTopEnd(false, "", data);
+        }
+    });
+}

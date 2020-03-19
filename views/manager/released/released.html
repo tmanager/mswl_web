@@ -3,6 +3,10 @@
 
 <!-- 以下部分页面嵌套到layout的block main和endblock之间 -->
 {% block main %}
+<!--本页面用到的样式-->
+<link href="/public/manager/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+<link href="/public/manager/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="/public/manager/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 
 <!-- 页面标题 -->
 <div class="portlet light bordered">
@@ -11,10 +15,166 @@
         <span class="caption-subject font-green bold uppercase">已发布信息一览表</span>
     </div>
 </div>
+<!-- 页面查询条件 -->
+<div class="portlet light bordered" style="margin-top: -35px">
+    <form class="inquiry-form form-horizontal" role="form">
+        <div class="form-body">
+            <div class="row">
+                <div class="col-lg-offset-1 col-md-offset-1 col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-4 col-xs-12 control-label">开始时间</label>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                            <input class="form-control input-medium date-picker" placeholder="开始时间" readonly name="starttime" id="starttime"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-4 col-xs-12 control-label">结束时间</label>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                            <input class="form-control input-medium date-picker" placeholder="结束时间" readonly  name="endtime" id="endtime" data-date-end-date="0d" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-offset-1 col-md-offset-1 col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-4 col-xs-12 control-label">昵称</label>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                            <input type="text" class="form-control" placeholder="昵称" name="nickname"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-4 col-xs-12 control-label">渠道</label>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                            <select  class="form-control" name="channel">
+                                <option value="">请选择</option>
+                                <option value="0">微信</option>
+                                <option value="1">支付宝</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
+<!-- 页面操作及表格 -->
+<div class="portlet light bordered" style="margin-top: -35px">
+    <div class="portlet-body">
+        <!-- 页面操作 -->
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="btn-group">
+                        <button id="op_inquiry" class="btn sbold green"> 查询
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="op_choice" class="btn sbold blue"> 设为精选
+                            <i class="fa fa-star"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="op_unchoice" class="btn sbold red"> 取消精选
+                            <i class="fa fa-star-o"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 角色表表格 -->
+        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="released_table">
+            <thead>
+            <tr>
+                <th style="width: 36px"> 序号 </th>
+                <th style="width: 36px">
+                    <input type="checkbox" class="group-checkable" data-set="#released_table .checkboxes" />
+                </th>
+                <th> 渠道 </th>
+                <th> 发布者 </th>
+                <th> 类别 </th>
+                <th> 标题 </th>
+                <th> 是否精选 </th>
+                <th> 发布时间 </th>
+                <th> 预览 </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="odd gradeX">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="released-detail" class="modal fade" tabindex="-1" data-width="400" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">审核信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="margin: 0 20px">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="text-align: center">
+                                <iframe width="320" height="568" frameborder="0" id="preview" style="border: 1px solid #ddd;"></iframe>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <form class="register-form form-horizontal" role="form">
+                                    <div class="form-body">
+                                        <!-- 角色ID隐藏（编辑角色时角色ID字段） -->
+                                        <input type="hidden" name="infoid">
+                                        <div class="form-group">
+                                            <label class="col-lg-12 col-md-12 col-sm-12 col-xs-12 control-label"  style="text-align: left">审核意见<span class="required"> * </span></label>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <textarea class="form-control" placeholder="审核意见" name="reviewcomment" style="height: 100px"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="text-align: center">
+                                            <button type="submit" data-status="0" id="reject-btn" class="btn red">驳回 <i class="iconfont icon-bohui"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- 处理中遮罩 -->
+        <div class="modal fade" id="loading" role="basic" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <img src="/public/manager/assets/global/img/loading-spinner-grey.gif" alt="" class="loading">
+                        <span> &nbsp;&nbsp;Loading... </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!--本页面用到插件的JS-->
+<script src="/public/manager/assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="/public/manager/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/public/manager/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<script src="/public/manager/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
+<script src="/public/manager/assets/global/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>
 
 <!--本页面用到的JS-->
-<script src="../../../public/manager/assets/pages/scripts/param/turnitin.js" type="text/javascript"></script>
+<script src="/public/manager/assets/pages/scripts/released/released.js" type="text/javascript"></script>
 {% endblock %}
