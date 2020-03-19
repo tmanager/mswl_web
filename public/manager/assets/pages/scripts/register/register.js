@@ -228,5 +228,6 @@ $("#info_table").on('click', '#op_preview', function (e) {
     var infoid = $("#info_table").dataTable().fnGetData(row).infoid;
     var infotype = $("#info_table").dataTable().fnGetData(row).infotype;
     //TODO:根据infotype获取用哪个模板
-    window.open(host + "/preview/used?infoid=" + infoid);
+    $("#preview").attr("src", host + "/preview/used?infoid=" + infoid);
+    $('#info-preview').modal('show');
 });
