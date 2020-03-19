@@ -5,7 +5,6 @@ var choiceList = [];
 if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         ChoiceTable.init();
-        ChoiceEdit.init();
     });
 }
 
