@@ -211,7 +211,7 @@ function adAdd(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: userHostUrl + "advert/add",    //请求发送到TestServlet处
+        url: webUrl + "advert/add",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -232,7 +232,7 @@ function adEdit(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: userHostUrl + "advert/edit",    //请求发送到TestServlet处
+        url: webUrl + "advert/edit",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
@@ -252,7 +252,7 @@ function adDelete(data){
         type: "post",
         contentType: "application/json",
         async: true,           //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        url: userHostUrl + "advert/delete",    //请求发送到TestServlet处
+        url: webUrl + "advert/delete",    //请求发送到TestServlet处
         data: sendMessageEdit(DEFAULT, data),
         dataType: "json",        //返回数据形式为json
         success: function (result) {
